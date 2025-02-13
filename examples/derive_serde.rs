@@ -1,4 +1,4 @@
-use ffi_enum::{prelude::*, FfiEnum};
+use ffi_enum::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[ffi_enum]

@@ -28,7 +28,7 @@ The current alternatives mostly define complex DSL with function macros, which c
 While this crate offers a nearly native experience by trying the best to fully mimic the behaviors of native `enums`, despite it requires non-exhaustive matching even inside the defining crate. FFi enums are defined with native rust enum item syntax with full support of formatting, code hint, and auto completion.
 
 ```rust
-use ffi_enum::{prelude::*, FfiEnum};
+use ffi_enum::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[ffi_enum]
