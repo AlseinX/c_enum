@@ -2,6 +2,20 @@
 
 Simply write and use `enum`s like rust native enums, freely passing through ffi.
 
+[![Crates.io][crates-badge]][crates-url]
+[![Docs.rs][docs-badge]][docs-url]
+[![MIT licensed][mit-badge]][mit-url]
+[![Build Status][actions-badge]][actions-url]
+
+[crates-badge]: https://img.shields.io/crates/v/ffi-enum.svg
+[crates-url]: https://crates.io/crates/ffi-enum
+[docs-badge]: https://img.shields.io/docsrs/ffi-enum
+[docs-url]: https://docs.rs/ffi-enum/latest/ffi_enum/
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-url]: https://github.com/AlseinX/ffi-enum/blob/master/LICENSE
+[actions-badge]: https://github.com/AlseinX/ffi-enum/workflows/Check/badge.svg
+[actions-url]: https://github.com/AlseinX/ffi-enum/actions?query=workflow%3ACI+branch%3Aslaveholder
+
 ## Why not using `#[repr(C)]` and `#[non_exhaustive]` ?
 
 + Rust's `#[repr(C)]` is not fully equal to a C-abi `enum`, and it is still an **undefined behavior** when an `enum` defined with `#[repr(C)]` recieves a value that is not listed in the definition of `enum`, from ffi.
