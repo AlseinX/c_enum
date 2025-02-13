@@ -1,0 +1,36 @@
+[package]
+name = "ffi-enum"
+readme = "README.md"
+version.workspace = true
+description.workspace = true
+homepage.workspace = true
+repository.workspace = true
+documentation.workspace = true
+authors.workspace = true
+license.workspace = true
+edition.workspace = true
+keywords.workspace = true
+
+[dependencies]
+macros = { package = "ffi-enum-macros", path = "macros" }
+
+thiserror = "2"
+
+[dev-dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
+
+[workspace]
+members = [".", "macros"]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.0"
+description = "Simply write and use `enum`s like rust native enums, freely passing through ffi"
+homepage = "https://github.com/AlseinX/ffi-enum"
+repository = "https://github.com/AlseinX/ffi-enum"
+documentation = "https://docs.rs/ffi-enum"
+authors = ["AlseinX <xyh951115@live.com>"]
+license = "MIT OR Apache-2.0"
+edition = "2021"
+keywords = ["ffi", "c-abi", "derive", "enum"]
