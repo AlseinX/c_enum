@@ -1,11 +1,14 @@
 use ffi_enum::prelude::*;
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
 #[ffi_enum]
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Error, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum Animal {
+    #[error("unknown animal")]
     Cat,
+    #[error("unknown animal")]
     Dog,
 }
 

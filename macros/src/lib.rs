@@ -25,6 +25,9 @@ export_attribute!(
     /// The generated `ffi_enum` type implements `::ffi_enum::FfiEnum` that provides with essential type and constant
     /// informations of the generated details.
     ///
+    /// The generated `ffi_enum` type by default implements `Copy`, `Clone`, `PartialEq`, `Eq`, based on which
+    /// essential implementations could be derived.
+    ///
     /// ## For Derive Macros
     ///
     /// There are 3 positions to place derive macros:
@@ -45,7 +48,7 @@ export_attribute!(
     /// `_` wildcard pattern** that covers other unknown values that would potentially come from ffi.
     ///
     /// As for the derive macros that does not care the variant details, or normally logically works fine for a
-    /// struct that contaions a single field, such as `PartialOrd` or `Ord`, attach the derive macros along with
+    /// struct that contaions a single field,  attach the derive macros along with
     /// their helper attributes at Position `2`. Derive macros passed in this way would see a `ffi_enum_origin`
     /// helper attribute with the original enum definition passed as the arguments. If you are authoring a derive
     /// macro that may need to see both the original and generated definitions, this way is preferred.
@@ -60,6 +63,12 @@ export_attribute!(
     /// for supported traits. The currently supported derives are:
     ///
     /// + `core::fmt::Debug`
+    /// + `core::fmt::Display` (The derive macro for the original `enum` is not hereby specified, user may use any
+    /// one that implements it for the original type)
+    /// + `core::hash::Hash`
+    /// + `core::str::FromStr` (The derive macro for the original `enum` is not hereby specified, user may use any
+    /// one that implements it for the original type)
+    /// + `thiserror::Error` implementing `core::error::Error` and `core::fmt::Display`
     /// + `serde::Serialize`
     /// + `serde::Deserialize`
     ///

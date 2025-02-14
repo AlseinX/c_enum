@@ -4,16 +4,16 @@ Simply write and use `enum`s like rust native enums, freely passing through ffi.
 
 [![Crates.io][crates-badge]][crates-url]
 [![Docs.rs][docs-badge]][docs-url]
-[![MIT licensed][mit-badge]][mit-url]
+[![MIT Or Apache-2.0 licensed][license-badge]][license-url]
 [![Build Status][actions-badge]][actions-url]
 
-[crates-badge]: https://img.shields.io/crates/v/ffi-enum.svg
+[crates-badge]: https://img.shields.io/crates/v/ffi-enum?style=flat-square
 [crates-url]: https://crates.io/crates/ffi-enum
-[docs-badge]: https://img.shields.io/docsrs/ffi-enum
+[docs-badge]: https://img.shields.io/docsrs/ffi-enum?style=flat-square
 [docs-url]: https://docs.rs/ffi-enum/latest/ffi_enum/
-[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[mit-url]: https://github.com/AlseinX/ffi-enum/blob/master/LICENSE
-[actions-badge]: https://github.com/AlseinX/ffi-enum/workflows/Check/badge.svg
+[license-badge]: https://img.shields.io/crates/l/ffi-enum?style=flat-square
+[license-url]: https://github.com/AlseinX/ffi-enum/blob/master/LICENSE
+[actions-badge]: https://img.shields.io/github/actions/workflow/status/AlseinX/ffi-enum/check.yml?style=flat-square
 [actions-url]: https://github.com/AlseinX/ffi-enum/actions?query=workflow%3ACI+branch%3Aslaveholder
 
 ## Why not using `#[repr(C)]` and `#[non_exhaustive]` ?

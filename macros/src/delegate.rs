@@ -41,6 +41,91 @@ impl Context<'_, '_> {
         })
     }
 
+    fn display(self) {
+        let Self {
+            span,
+            target,
+            origin,
+            impls,
+            ..
+        } = self;
+
+        impls.extend(quote_spanned! { span =>
+            impl ::core::fmt::Display for #target {
+                #[inline(always)]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    if let Ok(origin) = <#origin as ::core::convert::TryFrom<#target>>::try_from(*self) {
+                        <#origin as ::core::fmt::Display>::fmt(&origin, f)
+                    } else {
+                        write!(f, "<Unknown>")
+                    }
+                }
+            }
+        })
+    }
+
+    fn error(mut self) {
+        let Self {
+            span,
+            target,
+            ref mut impls,
+            ..
+        } = self;
+
+        impls.extend(quote_spanned! { span =>
+            impl ::core::error::Error for #target { }
+        });
+
+        self.display();
+    }
+
+    fn hash(self) {
+        let Self {
+            span,
+            target,
+            origin,
+            impls,
+            ..
+        } = self;
+
+        impls.extend(quote_spanned! { span =>
+            impl ::core::hash::Hash for #target {
+                #[inline(always)]
+                fn hash<H: ::core::hash::Hasher>(&self, state: &mut H) {
+                    if let Ok(origin) = <#origin as ::core::convert::TryFrom<#target>>::try_from(*self) {
+                        <#origin as ::core::hash::Hash>::hash(&origin, state)
+                    } else {
+                        ::core::hash::Hash::hash(&<#target as ::ffi_enum::FfiEnum>::UNKNOWN.repr, state)
+                    }
+                }
+            }
+        })
+    }
+
+    fn from_str(self) {
+        let Self {
+            span,
+            target,
+            origin,
+            impls,
+            ..
+        } = self;
+
+        impls.extend(quote_spanned! { span =>
+            impl ::core::str::FromStr for #target {
+                type Err = ::core::convert::Infallible;
+
+                #[inline(always)]
+                fn from_str(s: &str) -> Result<Self, Self::Err> {
+                    Ok(
+                        <#origin as ::core::str::FromStr>::from_str(s)
+                            .map_or_else(|_| <Self as ::ffi_enum::FfiEnum>::UNKNOWN, |v| v.into()),
+                    )
+                }
+            }
+        })
+    }
+
     fn serialize(self) {
         let Self {
             name,
@@ -149,6 +234,10 @@ pub fn delegate<'a, 'b>(
 
         match ident.to_string().as_str() {
             "Debug" => context.debug(),
+            "Display" => context.display(),
+            "Error" => context.error(),
+            "Hash" => context.hash(),
+            "FromStr" => context.from_str(),
             "Serialize" => context.serialize(),
             "Deserialize" => context.deserialize(),
             _ => return,
