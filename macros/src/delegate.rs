@@ -102,6 +102,7 @@ impl Context<'_, '_> {
         })
     }
 
+    #[allow(clippy::wrong_self_convention)]
     fn from_str(self) {
         let Self {
             span,
@@ -240,7 +241,7 @@ pub fn delegate<'a, 'b>(
             "FromStr" => context.from_str(),
             "Serialize" => context.serialize(),
             "Deserialize" => context.deserialize(),
-            _ => return,
+            _ => (),
         };
     }
 }

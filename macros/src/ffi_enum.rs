@@ -8,7 +8,7 @@ use syn::{
     TypePath,
 };
 
-use crate::utils::extract_meta_from_lists;
+use crate::utils::{extract_meta_from_lists, is_doc};
 
 pub struct Args(Punctuated<Meta, Token![,]>);
 
@@ -42,10 +42,11 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
             const MAX_16: u64 = (u16::MAX as u64) + 1;
             const MAX_32: u64 = (u32::MAX as u64) + 1;
             let name = if variants.iter().all(|v| v.discriminant.is_none()) {
+                #[allow(clippy::match_overlapping_arm)]
                 match variants.len() as _ {
-                    ..MAX_8 => "u8",
-                    ..MAX_16 => "u16",
-                    ..MAX_32 => "u32",
+                    ..=MAX_8 => "u8",
+                    ..=MAX_16 => "u16",
+                    ..=MAX_32 => "u32",
                     _ => "u64",
                 }
             } else {
@@ -94,6 +95,8 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
         path: ident.clone().into(),
     });
 
+    let docs = attrs.iter().filter(is_doc);
+
     let variant_ids = variants
         .iter()
         .map(|v| {
@@ -103,13 +106,18 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
         })
         .collect::<Vec<_>>();
 
+    let variant_docs = variants.iter().map(|v| {
+        let docs = v.attrs.iter().filter(is_doc);
+        quote!(#(#docs)*)
+    });
+
     let args = args.iter();
 
     let name = ident.to_string();
     let mut impls = Default::default();
 
     extract_meta_from_lists(attrs, "derive").for_each(super::delegate::delegate(
-        &name, &target, &origin, &attrs, &mut impls,
+        &name, &target, &origin, attrs, &mut impls,
     ));
 
     Ok(quote! {
@@ -132,7 +140,10 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
 
             #[allow(dead_code, non_upper_case_globals)]
             impl #target {
-                #(pub const #variant_ids: Self = Self { repr: #origin::#variant_ids as _ };)*
+                #(
+                    #variant_docs
+                    pub const #variant_ids: Self = Self { repr: #origin::#variant_ids as _ };
+                )*
             }
 
             impl ::core::convert::TryFrom<#target> for #origin {
@@ -173,6 +184,7 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
             #impls
         };
 
+        #(#docs)*
         #[derive(Clone, Copy, PartialEq, Eq, ::ffi_enum::__private::NoDerive)]
         #(#[#args])*
         #[ffi_enum_origin(#input)]
@@ -189,7 +201,7 @@ fn extract_repr(attrs: &[Attribute]) -> Result<Option<Type>> {
     let mut iter = extract_meta_from_lists(attrs, "repr").filter_map(|meta| {
         let Meta::Path(path) = meta else { return None };
         let s = path.get_ident()?.to_string();
-        let [b'i' | b'u', rest @ ..] = s.as_str().as_bytes() else {
+        let [b'i' | b'u', rest @ ..] = s.as_bytes() else {
             return None;
         };
         if !matches!(rest, b"8" | b"16" | b"32" | b"64" | b"128" | b"size") {
