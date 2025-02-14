@@ -8,11 +8,12 @@ pub mod __private;
 #[doc(inline)]
 pub use macros::ffi_enum;
 
+/// Re-exports of commonly used traits and types
 pub mod prelude {
     pub use crate::{ffi_enum, FfiEnum as _, FfiEnumExt as _};
 }
 
-/// types generated from `ffi_enum` implement this trait which provides essential type and constant information.
+/// Types generated from `ffi_enum` implement this trait which provides essential type and constant information.
 pub trait FfiEnum: Copy + Eq {
     /// The rusty `enum` type of the `ffi_enum` type
     type Enum: TryFrom<Self, Error = Error> + Into<Self>;
@@ -56,8 +57,10 @@ impl<T: FfiEnum> FfiEnumExt for T {
     }
 }
 
+/// Error type which `ffi_enum` generated operation may return
 #[derive(Debug, Error, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum Error {
+    /// `ffi_enum` generated type accepts any binary pattern as a valid value, which means some operations that requires a valid value may fail with an unknown value
     #[error("value of ffi_enum type is an unknown variant")]
     UnknownVariant,
 }
