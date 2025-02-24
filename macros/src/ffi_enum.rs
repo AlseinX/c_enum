@@ -190,7 +190,7 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
         #[ffi_enum_origin(#input)]
         #[repr(transparent)]
         #vis struct #ident {
-            repr: #repr,
+            pub repr: #repr,
         }
 
         #deferred_error
