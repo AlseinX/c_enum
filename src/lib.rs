@@ -58,9 +58,12 @@ impl<T: FfiEnum> FfiEnumExt for T {
 }
 
 /// Error type which `ffi_enum` generated operation may return
-#[derive(Debug, Error, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Debug, Error, Clone, Copy, PartialEq, Eq)]
 pub enum Error {
     /// `ffi_enum` generated type accepts any binary pattern as a valid value, which means some operations that requires a valid value may fail with an unknown value
     #[error("value of ffi_enum type is an unknown variant")]
     UnknownVariant,
+    /// The value of the `ffi_enum` type is out of range
+    #[error(transparent)]
+    TryFromInt(#[from] core::num::TryFromIntError),
 }
