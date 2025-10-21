@@ -44,9 +44,12 @@ fn main() {
     assert_eq!(json, "\"cat\"");
     let value: Animal = serde_json::from_str(&json).unwrap();
     assert_eq!(value, Animal::Cat);
-    let json = serde_json::to_string(&Animal::from(100u8)).unwrap();
+    assert_eq!(value, serde_json::from_str("\"kitty\"").unwrap());
+    assert!(serde_json::from_str::<Animal>("\"Rat\"").is_err());
+    let value = Animal::from(2i16);
+    let json = serde_json::to_string(&value).unwrap();
     assert_eq!(json, "\"<Unknown>\"");
-    let value: Animal = serde_json::from_str(&json).unwrap();
-    assert_eq!(value, Animal::UNKNOWN);
+    assert_eq!(usize::from(value), 2);
+    assert_eq!(u8::try_from(value).unwrap(), 2);
 }
 ```

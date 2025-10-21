@@ -20,12 +20,6 @@ pub trait FfiEnum: Copy + Eq {
 
     /// The representation type of the `ffi_enum` type
     type Repr: Copy + From<Self> + Into<Self>;
-
-    /// A sample of an unknown values
-    ///
-    /// Note that a `ffi_enum` accepts any value of the representation type, so `some_value != FfiEnum::UNKNOWN` **does not**
-    /// indicate that `some_value` is known
-    const UNKNOWN: Self;
 }
 
 /// Convenient operations on `FfiEnum`
