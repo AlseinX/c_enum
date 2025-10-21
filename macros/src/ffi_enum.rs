@@ -85,7 +85,7 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
     let mut impls = Default::default();
 
     extract_meta_from_lists(attrs, "derive").for_each(super::delegate::delegate(
-        &name, &target, &origin, attrs, &mut impls,
+        &name, &target, &origin, attrs, &repr, variants, &mut impls,
     ));
 
     let types = [
@@ -133,13 +133,6 @@ pub fn handle(Args(args): Args, input: ItemEnum) -> Result<TokenStream> {
             impl ::ffi_enum::FfiEnum for #target {
                 type Enum = #origin;
                 type Repr = #repr;
-                const UNKNOWN: Self = {
-                    let mut result: #repr = 0;
-                    while #(result == #target::#variant_ids.repr ||)* false {
-                        result += 1;
-                    }
-                    #target { repr: result }
-                };
             }
 
             #[allow(dead_code, non_upper_case_globals)]
